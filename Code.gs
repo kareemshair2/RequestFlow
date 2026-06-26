@@ -258,8 +258,6 @@ function fillDocumentFields(body, tmpl, formData) {
     'موضوع الطلب:': { key: 'subject', position: 'after' },
     'الوظيفة:': { key: 'jobTitle', position: 'after' },
     'مقدم الطلب:': { key: 'requester', position: 'after' },
-    'اقر انا /': { key: 'recipientName', position: 'replace' },
-    'رقم قومي /': { key: 'nationalId', position: 'replace' },
   };
 
   for (const [pattern, rule] of Object.entries(replacements)) {
@@ -273,29 +271,48 @@ function fillDocumentFields(body, tmpl, formData) {
         const text = elem.asText();
         const start = found.getStartOffset();
         const matchLen = pattern.length;
-        // Insert value after the label with a space
         if (start + matchLen < text.getText().length) {
-          // Try to set the text after the label
           const fullText = text.getText();
-          const before = fullText.substring(0, start + matchLen);
           const after = fullText.substring(start + matchLen);
-          // If there's already content after the colon, clear it first
           const contentAfter = after.trim();
           if (contentAfter) {
-            text.deleteText(start + matchLen, start + matchLen + contentAfter.length);
+            text.deleteText(start + matchLen, start + matchLen + contentAfter.length - 1);
           }
           text.insertText(start + matchLen, ' ' + value);
         }
       }
-    } else if (rule.position === 'replace') {
-      const found = body.findText(pattern);
-      if (found) {
-        const elem = found.getElement();
-        const text = elem.asText();
-        const start = found.getStartOffset();
-        const end = found.getEndOffsetInclusive();
-        text.replaceText(pattern, pattern + ' ' + value);
+    }
+  }
+
+  // Handle acknowledgment section (disbursement template with original format)
+  if (formData.acknowledgment && tmpl.fileName === 'تمبلت طلبات الصرف.docx') {
+    const startMarker = 'اقر انا /';
+    const endMarker = 'الاسم /';
+    const startFound = body.findText(startMarker);
+    const endFound = body.findText(endMarker);
+    if (startFound && endFound) {
+      const startElem = startFound.getElement();
+      const endElem = endFound.getElement();
+      const startParent = startElem.getParent();
+      const endParent = endElem.getParent();
+      // Delete all content between اقر انا / and الاسم /
+      const bodyChildren = body.getNumChildren();
+      let deleting = false;
+      const toRemove = [];
+      for (let i = 0; i < bodyChildren; i++) {
+        const child = body.getChild(i);
+        if (child === startParent) {
+          deleting = true;
+          continue;
+        }
+        if (child === endParent) {
+          break;
+        }
+        if (deleting) toRemove.push(child);
       }
+      for (const r of toRemove) body.removeChild(r);
+      // Set the acknowledgment text in the start paragraph
+      startParent.asParagraph().setText(formData.acknowledgment);
     }
   }
 }
