@@ -23,7 +23,7 @@ const CONFIG = {
       fields: [
         {id: 'requestDate', label: 'تاريخ الطلب', type: 'date', required: true},
         {id: 'requestingDept', label: 'الإدارة الطالبة', type: 'text', required: true},
-        {id: 'project', label: 'المشروع', type: 'text'},
+        {id: 'project', label: 'المشروع', type: 'text', required: true},
         {id: 'subject', label: 'موضوع الطلب', type: 'text', required: true},
         {id: 'jobTitle', label: 'الوظيفة', type: 'text', required: true},
         {id: 'requester', label: 'مقدم الطلب', type: 'text', required: true},
