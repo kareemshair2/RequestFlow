@@ -87,6 +87,28 @@ function doGet() {
   return html;
 }
 
+// POST handler for standalone HTML form (GitHub Pages)
+function doPost(e) {
+  try {
+    let formData;
+    if (e && e.postData && e.postData.contents) {
+      formData = JSON.parse(e.postData.contents);
+    } else {
+      formData = e.parameter || {};
+    }
+
+    const result = submitRequest(formData);
+
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, error: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // ============================================================
 // GET CONFIG for Frontend
 // ============================================================
