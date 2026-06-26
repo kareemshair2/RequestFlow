@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام إدارة الطلبات</title>
+  <title>┘å╪╕╪º┘à ╪Ñ╪»╪º╪▒╪⌐ ╪º┘ä╪╖┘ä╪¿╪º╪¬</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0f2f5;color:#1f2937;line-height:1.6;direction:rtl}
@@ -84,42 +84,42 @@
         </svg>
       </div>
       <div>
-        <h1>نظام إدارة الطلبات</h1>
-        <p class="subtitle">جمعية صناع الحياة المنوفية</p>
+        <h1>┘å╪╕╪º┘à ╪Ñ╪»╪º╪▒╪⌐ ╪º┘ä╪╖┘ä╪¿╪º╪¬</h1>
+        <p class="subtitle">╪¼┘à╪╣┘è╪⌐ ╪╡┘å╪º╪╣ ╪º┘ä╪¡┘è╪º╪⌐ ╪º┘ä┘à┘å┘ê┘ü┘è╪⌐</p>
       </div>
     </div>
 
     <!-- Setup Notice (collapsible) -->
     <div class="setup-notice" id="setupNotice" style="display:none;cursor:pointer" onclick="this.querySelector('input').select()">
-      <strong>🔗 API: </strong><span id="apiUrlDisplay" style="font-size:12px;color:#92400e;direction:ltr;word-break:break-all"></span>
-      <p style="font-size:11px;color:#92400e;margin-top:4px">تغيير الرابط؟ اضغط على <a href="#" onclick="event.stopPropagation();document.getElementById('setupNotice').style.display='none';document.getElementById('setupInputRow').style.display='block'">هنا</a></p>
+      <strong>≡ƒöù API: </strong><span id="apiUrlDisplay" style="font-size:12px;color:#92400e;direction:ltr;word-break:break-all"></span>
+      <p style="font-size:11px;color:#92400e;margin-top:4px">╪¬╪║┘è┘è╪▒ ╪º┘ä╪▒╪º╪¿╪╖╪ƒ ╪º╪╢╪║╪╖ ╪╣┘ä┘ë <a href="#" onclick="event.stopPropagation();document.getElementById('setupNotice').style.display='none';document.getElementById('setupInputRow').style.display='block'">┘ç┘å╪º</a></p>
     </div>
     <div class="setup-notice" id="setupInputRow">
-      <strong>⚙️ رابط API</strong>
+      <strong>ΓÜÖ∩╕Å ╪▒╪º╪¿╪╖ API</strong>
       <input type="url" id="appScriptUrl" value="https://script.google.com/macros/s/AKfycbw_UINQdrP9QsGPc6aa58WosGjyqwnmzUK2n_0iiYszbtPofKrvBirp3XXj9YbwHIjbKA/exec" onchange="saveUrl()">
-      <button class="btn btn-primary btn-sm" onclick="saveUrl()" style="margin-top:8px">حفظ</button>
+      <button class="btn btn-primary btn-sm" onclick="saveUrl()" style="margin-top:8px">╪¡┘ü╪╕</button>
     </div>
 
     <div class="progress-bar">
       <div class="progress-step active" data-step="1">
         <div class="step-number">1</div>
-        <div class="step-label">اختيار القالب</div>
+        <div class="step-label">╪º╪«╪¬┘è╪º╪▒ ╪º┘ä┘é╪º┘ä╪¿</div>
       </div>
       <div class="progress-line"></div>
       <div class="progress-step" data-step="2">
         <div class="step-number">2</div>
-        <div class="step-label">إدخال البيانات</div>
+        <div class="step-label">╪Ñ╪»╪«╪º┘ä ╪º┘ä╪¿┘è╪º┘å╪º╪¬</div>
       </div>
       <div class="progress-line"></div>
       <div class="progress-step" data-step="3">
         <div class="step-number">3</div>
-        <div class="step-label">تأكيد ورفع</div>
+        <div class="step-label">╪¬╪ú┘â┘è╪» ┘ê╪▒┘ü╪╣</div>
       </div>
     </div>
 
     <div id="step1" class="step-content">
       <div class="card">
-        <div class="card-header">اختر نوع الطلب</div>
+        <div class="card-header">╪º╪«╪¬╪▒ ┘å┘ê╪╣ ╪º┘ä╪╖┘ä╪¿</div>
         <div class="card-body">
           <div class="template-grid" id="templateGrid">
             <div class="template-card" data-template="purchase" onclick="selectTemplate('purchase')">
@@ -129,8 +129,8 @@
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
                 </svg>
               </div>
-              <div class="template-name">طلب شراء</div>
-              <div class="template-desc">سلعة / خدمة</div>
+              <div class="template-name">╪╖┘ä╪¿ ╪┤╪▒╪º╪í</div>
+              <div class="template-desc">╪│┘ä╪╣╪⌐ / ╪«╪»┘à╪⌐</div>
             </div>
             <div class="template-card" data-template="disbursement" onclick="selectTemplate('disbursement')">
               <div class="template-icon">
@@ -138,8 +138,8 @@
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                 </svg>
               </div>
-              <div class="template-name">إيصال استلام</div>
-              <div class="template-desc">منحة عينية</div>
+              <div class="template-name">╪Ñ┘è╪╡╪º┘ä ╪º╪│╪¬┘ä╪º┘à</div>
+              <div class="template-desc">┘à┘å╪¡╪⌐ ╪╣┘è┘å┘è╪⌐</div>
             </div>
             <div class="template-card" data-template="cases" onclick="selectTemplate('cases')">
               <div class="template-icon">
@@ -148,8 +148,8 @@
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               </div>
-              <div class="template-name">كشف توزيع</div>
-              <div class="template-desc">حالات ومستفيدين</div>
+              <div class="template-name">┘â╪┤┘ü ╪¬┘ê╪▓┘è╪╣</div>
+              <div class="template-desc">╪¡╪º┘ä╪º╪¬ ┘ê┘à╪│╪¬┘ü┘è╪»┘è┘å</div>
             </div>
           </div>
         </div>
@@ -160,56 +160,56 @@
       <div class="card">
         <div class="card-header">
           <div style="display:flex;align-items:center;gap:8px">
-            <button class="btn btn-outline" onclick="goToStep(1)" type="button">&larr; تغيير القالب</button>
-            <span id="selectedTemplateName">طلب شراء (سلعة/خدمة)</span>
+            <button class="btn btn-outline" onclick="goToStep(1)" type="button">&larr; ╪¬╪║┘è┘è╪▒ ╪º┘ä┘é╪º┘ä╪¿</button>
+            <span id="selectedTemplateName">╪╖┘ä╪¿ ╪┤╪▒╪º╪í (╪│┘ä╪╣╪⌐/╪«╪»┘à╪⌐)</span>
           </div>
         </div>
         <div class="card-body">
           <form id="mainForm" onsubmit="return false;">
             <input type="hidden" id="templateKey" name="templateKey">
             <div class="form-section">
-              <h3 class="section-title">البيانات الأساسية</h3>
+              <h3 class="section-title">╪º┘ä╪¿┘è╪º┘å╪º╪¬ ╪º┘ä╪ú╪│╪º╪│┘è╪⌐</h3>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="requestDate">تاريخ الطلب <span class="required">*</span></label>
+                  <label for="requestDate">╪¬╪º╪▒┘è╪« ╪º┘ä╪╖┘ä╪¿ <span class="required">*</span></label>
                   <input type="date" id="requestDate" name="requestDate" required>
                 </div>
                 <div class="form-group">
-                  <label for="band">البند</label>
-                  <input type="text" id="band" name="band" placeholder="مثال: مشتريات، إعانات، ...">
+                  <label for="band">╪º┘ä╪¿┘å╪»</label>
+                  <input type="text" id="band" name="band" placeholder="┘à╪½╪º┘ä: ┘à╪┤╪¬╪▒┘è╪º╪¬╪î ╪Ñ╪╣╪º┘å╪º╪¬╪î ...">
                 </div>
                 <div class="form-group">
-                  <label for="title">عنوان الطلب <span class="required">*</span></label>
-                  <input type="text" id="title" name="title" required placeholder="عنوان مختصر للطلب">
+                  <label for="title">╪╣┘å┘ê╪º┘å ╪º┘ä╪╖┘ä╪¿ <span class="required">*</span></label>
+                  <input type="text" id="title" name="title" required placeholder="╪╣┘å┘ê╪º┘å ┘à╪«╪¬╪╡╪▒ ┘ä┘ä╪╖┘ä╪¿">
                 </div>
               </div>
             </div>
             <div class="form-section" id="templateFields">
-              <h3 class="section-title">بيانات القالب</h3>
+              <h3 class="section-title">╪¿┘è╪º┘å╪º╪¬ ╪º┘ä┘é╪º┘ä╪¿</h3>
               <div id="dynamicFields"></div>
             </div>
             <div class="form-section" id="tableSection" style="display:none">
-              <h3 class="section-title" id="tableSectionTitle">الجدول</h3>
+              <h3 class="section-title" id="tableSectionTitle">╪º┘ä╪¼╪»┘ê┘ä</h3>
               <div class="table-wrapper">
                 <table id="itemsTable">
                   <thead><tr id="tableHeaderRow"></tr></thead>
                   <tbody id="tableBody"></tbody>
                 </table>
               </div>
-              <button class="btn btn-outline btn-sm" onclick="addTableRow()" type="button">+ إضافة بند</button>
+              <button class="btn btn-outline btn-sm" onclick="addTableRow()" type="button">+ ╪Ñ╪╢╪º┘ü╪⌐ ╪¿┘å╪»</button>
             </div>
             <div class="form-section">
-              <h3 class="section-title">ملاحظات</h3>
+              <h3 class="section-title">┘à┘ä╪º╪¡╪╕╪º╪¬</h3>
               <div class="form-group">
-                <textarea id="notes" name="notes" rows="3" placeholder="أي ملاحظات إضافية..."></textarea>
+                <textarea id="notes" name="notes" rows="3" placeholder="╪ú┘è ┘à┘ä╪º╪¡╪╕╪º╪¬ ╪Ñ╪╢╪º┘ü┘è╪⌐..."></textarea>
               </div>
             </div>
             <div class="form-actions">
               <button class="btn btn-primary" onclick="submitForm()" type="button">
-                <span id="submitBtnText">تقديم الطلب</span>
+                <span id="submitBtnText">╪¬┘é╪»┘è┘à ╪º┘ä╪╖┘ä╪¿</span>
                 <div id="submitSpinner" class="spinner" style="display:none"></div>
               </button>
-              <button class="btn btn-outline" onclick="resetForm()" type="button">إعادة تعيين</button>
+              <button class="btn btn-outline" onclick="resetForm()" type="button">╪Ñ╪╣╪º╪»╪⌐ ╪¬╪╣┘è┘è┘å</button>
             </div>
           </form>
         </div>
@@ -225,10 +225,10 @@
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
           </div>
-          <h2 style="margin:16px 0 8px;color:#059669">تم تقديم الطلب بنجاح!</h2>
+          <h2 style="margin:16px 0 8px;color:#059669">╪¬┘à ╪¬┘é╪»┘è┘à ╪º┘ä╪╖┘ä╪¿ ╪¿┘å╪¼╪º╪¡!</h2>
           <p id="successMessage" style="color:#6b7280;margin-bottom:24px"></p>
           <div id="successLinks" class="success-links"></div>
-          <button class="btn btn-primary" onclick="resetForm()" type="button">تقديم طلب جديد</button>
+          <button class="btn btn-primary" onclick="resetForm()" type="button">╪¬┘é╪»┘è┘à ╪╖┘ä╪¿ ╪¼╪»┘è╪»</button>
         </div>
       </div>
     </div>
@@ -242,35 +242,35 @@
   <script>
     const TEMPLATES = {
       purchase: {
-        name:'طلب شراء (سلعة/خدمة)', fields:[
-          {id:'requestDate',label:'تاريخ الطلب',type:'date',required:true},
-          {id:'requestingDept',label:'الإدارة الطالبة',type:'text',required:true},
-          {id:'project',label:'المشروع',type:'text'},
-          {id:'subject',label:'موضوع الطلب',type:'text',required:true},
-          {id:'jobTitle',label:'الوظيفة',type:'text'},
-          {id:'requester',label:'مقدم الطلب',type:'text',required:true},
-          {id:'details',label:'تفاصيل الطلب',type:'textarea'},
-          {id:'requesterSignature',label:'توقيع الجهة الطالبة',type:'text'},
-          {id:'warehouseReview',label:'مراجعة المخازن',type:'text'},
-          {id:'financialApproval',label:'الإدارة المالية',type:'text'},
-          {id:'executiveApproval',label:'المدير التنفيذي',type:'text'}
-        ], tableColumns:['بند رقم','الصنف والمواصفات','الوحدة','الكمية','سعر الوحدة التقديرية','القيمة التقديرية'], tableField:'items'
+        name:'╪╖┘ä╪¿ ╪┤╪▒╪º╪í (╪│┘ä╪╣╪⌐/╪«╪»┘à╪⌐)', fields:[
+          {id:'requestDate',label:'╪¬╪º╪▒┘è╪« ╪º┘ä╪╖┘ä╪¿',type:'date',required:true},
+          {id:'requestingDept',label:'╪º┘ä╪Ñ╪»╪º╪▒╪⌐ ╪º┘ä╪╖╪º┘ä╪¿╪⌐',type:'text',required:true},
+          {id:'project',label:'╪º┘ä┘à╪┤╪▒┘ê╪╣',type:'text'},
+          {id:'subject',label:'┘à┘ê╪╢┘ê╪╣ ╪º┘ä╪╖┘ä╪¿',type:'text',required:true},
+          {id:'jobTitle',label:'╪º┘ä┘ê╪╕┘è┘ü╪⌐',type:'text'},
+          {id:'requester',label:'┘à┘é╪»┘à ╪º┘ä╪╖┘ä╪¿',type:'text',required:true},
+          {id:'details',label:'╪¬┘ü╪º╪╡┘è┘ä ╪º┘ä╪╖┘ä╪¿',type:'textarea'},
+          {id:'requesterSignature',label:'╪¬┘ê┘é┘è╪╣ ╪º┘ä╪¼┘ç╪⌐ ╪º┘ä╪╖╪º┘ä╪¿╪⌐',type:'text'},
+          {id:'warehouseReview',label:'┘à╪▒╪º╪¼╪╣╪⌐ ╪º┘ä┘à╪«╪º╪▓┘å',type:'text'},
+          {id:'financialApproval',label:'╪º┘ä╪Ñ╪»╪º╪▒╪⌐ ╪º┘ä┘à╪º┘ä┘è╪⌐',type:'text'},
+          {id:'executiveApproval',label:'╪º┘ä┘à╪»┘è╪▒ ╪º┘ä╪¬┘å┘ü┘è╪░┘è',type:'text'}
+        ], tableColumns:['╪¿┘å╪» ╪▒┘é┘à','╪º┘ä╪╡┘å┘ü ┘ê╪º┘ä┘à┘ê╪º╪╡┘ü╪º╪¬','╪º┘ä┘ê╪¡╪»╪⌐','╪º┘ä┘â┘à┘è╪⌐','╪│╪╣╪▒ ╪º┘ä┘ê╪¡╪»╪⌐ ╪º┘ä╪¬┘é╪»┘è╪▒┘è╪⌐','╪º┘ä┘é┘è┘à╪⌐ ╪º┘ä╪¬┘é╪»┘è╪▒┘è╪⌐'], tableField:'items'
       },
       disbursement: {
-        name:'إيصال استلام منحة عينية', fields:[
-          {id:'requestDate',label:'تاريخ الاستلام',type:'date',required:true},
-          {id:'recipientName',label:'اسم المستلم',type:'text',required:true},
-          {id:'nationalId',label:'رقم قومي',type:'text'},
-          {id:'acknowledgment',label:'نص الإقرار',type:'textarea'},
-          {id:'signatureName',label:'الاسم (التوقيع)',type:'text'},
-          {id:'signature',label:'التوقيع',type:'text'}
-        ], tableFields:[{id:'itemDesc',label:'الصنف المستلم'}], tableField:'receivedItems'
+        name:'╪Ñ┘è╪╡╪º┘ä ╪º╪│╪¬┘ä╪º┘à ┘à┘å╪¡╪⌐ ╪╣┘è┘å┘è╪⌐', fields:[
+          {id:'requestDate',label:'╪¬╪º╪▒┘è╪« ╪º┘ä╪º╪│╪¬┘ä╪º┘à',type:'date',required:true},
+          {id:'recipientName',label:'╪º╪│┘à ╪º┘ä┘à╪│╪¬┘ä┘à',type:'text',required:true},
+          {id:'nationalId',label:'╪▒┘é┘à ┘é┘ê┘à┘è',type:'text'},
+          {id:'acknowledgment',label:'┘å╪╡ ╪º┘ä╪Ñ┘é╪▒╪º╪▒',type:'textarea'},
+          {id:'signatureName',label:'╪º┘ä╪º╪│┘à (╪º┘ä╪¬┘ê┘é┘è╪╣)',type:'text'},
+          {id:'signature',label:'╪º┘ä╪¬┘ê┘é┘è╪╣',type:'text'}
+        ], tableFields:[{id:'itemDesc',label:'╪º┘ä╪╡┘å┘ü ╪º┘ä┘à╪│╪¬┘ä┘à'}], tableField:'receivedItems'
       },
       cases: {
-        name:'كشف توزيع', fields:[
-          {id:'requestDate',label:'تاريخ التوزيع',type:'date',required:true},
-          {id:'title',label:'عنوان الكشف',type:'text',required:true}
-        ], tableColumns:['الاسم','العدد','التوقيع'], tableField:'beneficiaries'
+        name:'┘â╪┤┘ü ╪¬┘ê╪▓┘è╪╣', fields:[
+          {id:'requestDate',label:'╪¬╪º╪▒┘è╪« ╪º┘ä╪¬┘ê╪▓┘è╪╣',type:'date',required:true},
+          {id:'title',label:'╪╣┘å┘ê╪º┘å ╪º┘ä┘â╪┤┘ü',type:'text',required:true}
+        ], tableColumns:['╪º┘ä╪º╪│┘à','╪º┘ä╪╣╪»╪»','╪º┘ä╪¬┘ê┘é┘è╪╣'], tableField:'beneficiaries'
       }
     };
 
@@ -314,9 +314,9 @@
       const t = TEMPLATES[key];
       document.getElementById('selectedTemplateName').textContent = t.name;
       document.getElementById('templateKey').value = key;
-      if (key==='purchase') document.getElementById('band').value = 'مشتريات';
-      else if (key==='disbursement') document.getElementById('band').value = 'استلامات';
-      else if (key==='cases') document.getElementById('band').value = 'توزيع';
+      if (key==='purchase') document.getElementById('band').value = '┘à╪┤╪¬╪▒┘è╪º╪¬';
+      else if (key==='disbursement') document.getElementById('band').value = '╪º╪│╪¬┘ä╪º┘à╪º╪¬';
+      else if (key==='cases') document.getElementById('band').value = '╪¬┘ê╪▓┘è╪╣';
       buildFields(t);
       buildTable(t);
       goToStep(2);
@@ -348,7 +348,7 @@
       const tb = document.getElementById('tableBody');
       if (!tmpl.tableField && !tmpl.tableFields) { sec.style.display='none'; return; }
       sec.style.display='block';
-      document.getElementById('tableSectionTitle').textContent = tmpl.tableColumns?'جدول البيانات':'المواد المستلمة';
+      document.getElementById('tableSectionTitle').textContent = tmpl.tableColumns?'╪¼╪»┘ê┘ä ╪º┘ä╪¿┘è╪º┘å╪º╪¬':'╪º┘ä┘à┘ê╪º╪» ╪º┘ä┘à╪│╪¬┘ä┘à╪⌐';
       let cols = tmpl.tableColumns || (tmpl.tableFields?tmpl.tableFields.map(f=>f.label):[]);
       hr.innerHTML = cols.map(c=>'<th>'+c+'</th>').join('')+'<th style="width:40px"></th>';
       tb.innerHTML = '';
@@ -361,11 +361,11 @@
       const tb = document.getElementById('tableBody');
       const ri = tb.children.length+1;
       const tr = document.createElement('tr');
-      const colMap = {'بند رقم':'index','م':'index','الصنف والمواصفات':'itemName','الصنف':'itemName','الوحدة':'unit','الكمية':'quantity','العدد':'count','سعر الوحدة التقديرية':'unitPrice','القيمة التقديرية':'totalPrice','الاسم':'name','التوقيع':'signature'};
+      const colMap = {'╪¿┘å╪» ╪▒┘é┘à':'index','┘à':'index','╪º┘ä╪╡┘å┘ü ┘ê╪º┘ä┘à┘ê╪º╪╡┘ü╪º╪¬':'itemName','╪º┘ä╪╡┘å┘ü':'itemName','╪º┘ä┘ê╪¡╪»╪⌐':'unit','╪º┘ä┘â┘à┘è╪⌐':'quantity','╪º┘ä╪╣╪»╪»':'count','╪│╪╣╪▒ ╪º┘ä┘ê╪¡╪»╪⌐ ╪º┘ä╪¬┘é╪»┘è╪▒┘è╪⌐':'unitPrice','╪º┘ä┘é┘è┘à╪⌐ ╪º┘ä╪¬┘é╪»┘è╪▒┘è╪⌐':'totalPrice','╪º┘ä╪º╪│┘à':'name','╪º┘ä╪¬┘ê┘é┘è╪╣':'signature'};
       if (t.tableColumns) {
         t.tableColumns.forEach(col=>{
           const td = document.createElement('td');
-          if (col==='بند رقم'||col==='م') { td.textContent=ri; td.style.fontWeight='600'; td.style.textAlign='center'; }
+          if (col==='╪¿┘å╪» ╪▒┘é┘à'||col==='┘à') { td.textContent=ri; td.style.fontWeight='600'; td.style.textAlign='center'; }
           else { const inp=document.createElement('input'); inp.type='text'; inp.name='table_'+colMap[col]; inp.placeholder=col; td.appendChild(inp); }
           tr.appendChild(td);
         });
@@ -394,14 +394,14 @@
 
     function submitForm() {
       const t=TEMPLATES[currentTemplate];
-      if(!t){showError('الرجاء اختيار قالب أولاً');return}
+      if(!t){showError('╪º┘ä╪▒╪¼╪º╪í ╪º╪«╪¬┘è╪º╪▒ ┘é╪º┘ä╪¿ ╪ú┘ê┘ä╪º┘ï');return}
       const apiUrl=getApiUrl();
-      if(!apiUrl){showError('ضع رابط Web App في الإعدادات أولاً');return}
+      if(!apiUrl){showError('╪╢╪╣ ╪▒╪º╪¿╪╖ Web App ┘ü┘è ╪º┘ä╪Ñ╪╣╪»╪º╪»╪º╪¬ ╪ú┘ê┘ä╪º┘ï');return}
 
       const form=document.getElementById('mainForm');
       let valid=true;
       form.querySelectorAll('[required]').forEach(f=>{if(!f.value.trim()){f.style.borderColor='#dc2626';valid=false}else f.style.borderColor='#d1d5db'});
-      if(!valid){showError('الرجاء ملء جميع الحقول المطلوبة');return}
+      if(!valid){showError('╪º┘ä╪▒╪¼╪º╪í ┘à┘ä╪í ╪¼┘à┘è╪╣ ╪º┘ä╪¡┘é┘ê┘ä ╪º┘ä┘à╪╖┘ä┘ê╪¿╪⌐');return}
 
       const formData={templateKey:currentTemplate,requestDate:document.getElementById('requestDate').value,band:document.getElementById('band').value,title:document.getElementById('title').value||document.getElementById('subject')?.value||'',notes:document.getElementById('notes').value};
       t.fields.forEach(f=>{const el=document.getElementById(f.id);if(el)formData[f.id]=el.value});
@@ -414,21 +414,21 @@
         .then(()=>{
           document.getElementById('submitBtnText').style.display='inline';
           document.getElementById('submitSpinner').style.display='none';
-          showSuccess({message:'تم تقديم الطلب بنجاح!',docUrl:'',folderUrl:''});
+          showSuccess({message:'╪¬┘à ╪¬┘é╪»┘è┘à ╪º┘ä╪╖┘ä╪¿ ╪¿┘å╪¼╪º╪¡!',docUrl:'',folderUrl:''});
         })
         .catch(err=>{
           document.getElementById('submitBtnText').style.display='inline';
           document.getElementById('submitSpinner').style.display='none';
-          showError('تم الإرسال، لكن تأكد من ظهور البيانات في Sheet');
+          showError('╪¬┘à ╪º┘ä╪Ñ╪▒╪│╪º┘ä╪î ┘ä┘â┘å ╪¬╪ú┘â╪» ┘à┘å ╪╕┘ç┘ê╪▒ ╪º┘ä╪¿┘è╪º┘å╪º╪¬ ┘ü┘è Sheet');
         });
     }
 
     function showSuccess(result) {
       goToStep(3);
-      document.getElementById('successMessage').textContent=result.message||'تم إنشاء المستند بنجاح';
+      document.getElementById('successMessage').textContent=result.message||'╪¬┘à ╪Ñ┘å╪┤╪º╪í ╪º┘ä┘à╪│╪¬┘å╪» ╪¿┘å╪¼╪º╪¡';
       const lc=document.getElementById('successLinks'); lc.innerHTML='';
-      if(result.docUrl){const a=document.createElement('a');a.href=result.docUrl;a.target='_blank';a.innerHTML='📄 فتح المستند';lc.appendChild(a)}
-      if(result.folderUrl){const a=document.createElement('a');a.href=result.folderUrl;a.target='_blank';a.innerHTML='📁 فتح المجلد';lc.appendChild(a)}
+      if(result.docUrl){const a=document.createElement('a');a.href=result.docUrl;a.target='_blank';a.innerHTML='≡ƒôä ┘ü╪¬╪¡ ╪º┘ä┘à╪│╪¬┘å╪»';lc.appendChild(a)}
+      if(result.folderUrl){const a=document.createElement('a');a.href=result.folderUrl;a.target='_blank';a.innerHTML='≡ƒôü ┘ü╪¬╪¡ ╪º┘ä┘à╪¼┘ä╪»';lc.appendChild(a)}
     }
 
     function showError(msg){
