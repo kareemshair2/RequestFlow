@@ -1,41 +1,45 @@
 # RequestFlow
 
 نظام إدارة الطلبات - جمعية صناع الحياة المنوفية  
-إرسال الطلبات عبر فورم HTML → إنشاء مستند Word في Drive + تسجيل في Google Sheets
+إرسال الطلبات عبر فورم HTML → إنشاء مستند في Google Drive + تسجيل في Google Sheets
 
 ## الملفات
 
 | الملف | الوظيفة |
 |-------|---------|
-| `Code.gs` | Google Apps Script backend - يتولى إنشاء الملفات والمجلدات والتسجيل في الشيت |
-| `Index.html` | واجهة المستخدم الرئيسية (الفورم) |
-| `Stylesheet.html` | تنسيقات CSS |
-| `JavaScript.html` | منطق الفورم (إضافة صفوف، التحقق من البيانات) |
-| `add_placeholders.py` | سكربت Python لإضافة `{{placeholders}}` لملفات القوالب |
+| `index.html` | واجهة المستخدم (GitHub Pages) - الفورم المباشر |
+| `Code.gs` | Google Apps Script backend (API) |
 
-## طريقة النشر
+## رابط الفورم
+**[https://kareemshair2.github.io/RequestFlow](https://kareemshair2.github.io/RequestFlow)**
 
-### 1. تجهيز القوالب
-- شغّل `add_placeholders.py` عشان تضيف placeholders لملفات القوالب
-- ارفع الملفات الناتجة من مجلد `modified/` إلى Google Drive
+## طريقة النشر (مرة واحدة)
 
-### 2. ربط Google Sheets
-1. افتح الشيت: `Extensions > Apps Script`
-2. أنشئ مشروع جديد وسمّه "RequestFlow"
-3. انسخ محتوى الملفات الأربعة (Code.gs, Index.html, Stylesheet.html, JavaScript.html) في الملفات المقابلة
-4. فعّل Drive API من Resources > Cloud Platform Project
-5. شغّل `setupSheet()` من المحرر عشان تنشئ التبوت
-6. انشر: Deploy > New Deployment > Web App (Execute as: Me, Access: Anyone)
+### 1. ربط Google Apps Script
+1. افتح الشيت: https://docs.google.com/spreadsheets/d/1x7UhPnFWM8RHYacFoa9tHG5yoWA7cRDHZg5xFkv-tW4
+2. **Extensions > Apps Script** > سمّي المشروع "RequestFlow"
+3. انسخ محتوى `Code.gs` كاملاً في ملف `Code.gs`
+4. **Resources > Cloud Platform Project** > فعّل **Drive API**
+5. شغّل دالة `setupSheet()` من المحرر (حتى تنشئ التبوت)
+6. **Deploy > New Deployment > Web App**:
+   - Execute as: **Me**
+   - Access: **Anyone with link**
+   - انسخ الرابط الناتج (هو دا API URL)
 
-### 3. استخدام الفورم
-- خذ رابط Web App ووزعه على المستخدمين
-- المستخدم يختار القالب، يملأ البيانات، ويضغط "تقديم الطلب"
-- النظام ينشئ المستند في Drive ويسجل البيانات في Sheet
+### 2. تجهيز قوالب Drive
+- حمل ملفات القوالب من مجلد `templates/modified/` إلى مجلد `تمبلت الطلبات` في Drive
 
-## القوالب المتوفرة
-- **طلب شراء (سلعة/خدمة)** - مع جدول أصناف
-- **إيصال استلام منحة عينية** - إقرار استلام
-- **كشف توزيع** - كشف بأسماء المستفيدين
+### 3. الفورم جاهز!
+- الفورم على GitHub Pages مربوط تلقائياً بالـ API
+- ابدأ من: https://kareemshair2.github.io/RequestFlow
+
+## النظام بيشتغل إزاي؟
+1. المستخدم بيفتح الفورم
+2. بيختار القالب (طلب شراء / إيصال استلام / كشف توزيع)
+3. بيملأ البيانات وبيضغط **تقديم الطلب**
+4. النظام:
+   - ينشئ مستند في Drive (جوه مجلد البند > تاريخ - عنوان)
+   - يسجل البيانات في Sheet (تاب للبند + تاب رئيسي `all`)
 
 ## License
 MIT
