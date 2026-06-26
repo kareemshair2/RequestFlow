@@ -13,17 +13,16 @@ const CONFIG = {
   sheetId: '1x7UhPnFWM8RHYacFoa9tHG5yoWA7cRDHZg5xFkv-tW4',
   sheetName: 'all',
   templatesFolderName: 'تمبلت الطلبات',
+  templatesFolderId: '1Aa5Z_OVfrf8-BNqdVyXQPx15CM678ZO3',
 
   templates: {
     purchase: {
       fileName: 'تمبلت الشراء.docx',
       name: 'طلب شراء (سلعة/خدمة)',
-      folderPrefix: 'طلبات شراء',
-      sheetBand: 'مشتريات',
+      sheetProject: 'مشتريات',
       fields: [
         {id: 'requestDate', label: 'تاريخ الطلب', type: 'date', required: true},
         {id: 'requestingDept', label: 'الإدارة الطالبة', type: 'text', required: true},
-        {id: 'project', label: 'المشروع', type: 'text', required: true},
         {id: 'subject', label: 'موضوع الطلب', type: 'text', required: true},
         {id: 'jobTitle', label: 'الوظيفة', type: 'text', required: true},
         {id: 'requester', label: 'مقدم الطلب', type: 'text', required: true},
@@ -35,8 +34,7 @@ const CONFIG = {
     disbursement: {
       fileName: 'تمبلت طلبات الصرف.docx',
       name: 'إيصال استلام منحة عينية',
-      folderPrefix: 'صرف منح',
-      sheetBand: 'استلامات',
+      sheetProject: 'استلامات',
       fields: [
         {id: 'requestDate', label: 'تاريخ الاستلام', type: 'date', required: true},
         {id: 'acknowledgment', label: 'نص الإقرار', type: 'textarea'}
@@ -49,8 +47,7 @@ const CONFIG = {
     cases: {
       fileName: 'كشف الحالات.docx',
       name: 'كشف توزيع',
-      folderPrefix: 'كشوف توزيع',
-      sheetBand: 'توزيع',
+      sheetProject: 'توزيع',
       fields: [
         {id: 'requestDate', label: 'تاريخ التوزيع', type: 'date', required: true},
         {id: 'title', label: 'عنوان الكشف', type: 'text', required: true}
@@ -131,18 +128,18 @@ function submitRequest(formData) {
     const tmpl = CONFIG.templates[formData.templateKey];
     if (!tmpl) throw new Error('قالب غير معروف');
 
-    const band = formData.band || tmpl.sheetBand || 'عام';
+    const project = formData.project || 'عام';
     const requestDate = formData.requestDate || Utilities.formatDate(new Date(), 'GMT+2', 'yyyy-MM-dd');
     const title = formData.title || formData.subject || 'طلب';
 
-    // Create folder structure
-    const folderInfo = createFolderStructure(band, requestDate, title);
+    // Create folder structure (root → project → date - title)
+    const folderInfo = createFolderStructure(project, requestDate, title);
 
     // Generate document
     const docInfo = generateDocument(tmpl, formData, folderInfo.folder, title);
 
     // Save to sheet
-    saveToSheet(formData, docInfo.url, band);
+    saveToSheet(formData, docInfo.url, project);
 
     return {
       success: true,
@@ -158,13 +155,13 @@ function submitRequest(formData) {
 // ============================================================
 // FOLDER STRUCTURE
 // ============================================================
-function createFolderStructure(band, dateStr, title) {
+function createFolderStructure(projectName, dateStr, title) {
   const rootFolder = DriveApp.getFolderById(CONFIG.rootFolderId);
 
-  // Get or create band folder
-  let bandFolder;
-  const folders = rootFolder.getFoldersByName(band);
-  bandFolder = folders.hasNext() ? folders.next() : rootFolder.createFolder(band);
+  // Get or create project folder
+  let projectFolder;
+  const folders = rootFolder.getFoldersByName(projectName);
+  projectFolder = folders.hasNext() ? folders.next() : rootFolder.createFolder(projectName);
 
   // Format date
   let dateObj = new Date(dateStr);
@@ -173,8 +170,8 @@ function createFolderStructure(band, dateStr, title) {
 
   // Create dated subfolder
   const folderName = `${datePrefix} - ${title}`;
-  const subFolders = bandFolder.getFoldersByName(folderName);
-  const requestFolder = subFolders.hasNext() ? subFolders.next() : bandFolder.createFolder(folderName);
+  const subFolders = projectFolder.getFoldersByName(folderName);
+  const requestFolder = subFolders.hasNext() ? subFolders.next() : projectFolder.createFolder(folderName);
 
   return {
     folder: requestFolder,
@@ -186,7 +183,9 @@ function createFolderStructure(band, dateStr, title) {
 // DOCUMENT GENERATION
 // ============================================================
 function generateDocument(tmpl, formData, targetFolder, title) {
-  const templatesFolder = findFolder(CONFIG.rootFolderId, CONFIG.templatesFolderName);
+  const templatesFolder = CONFIG.templatesFolderId
+    ? DriveApp.getFolderById(CONFIG.templatesFolderId)
+    : findFolder(CONFIG.rootFolderId, CONFIG.templatesFolderName);
 
   // Find template file
   const templateFile = findTemplateFile(templatesFolder, tmpl.fileName);
@@ -194,15 +193,23 @@ function generateDocument(tmpl, formData, targetFolder, title) {
 
   const docName = `${tmpl.name} - ${title}`;
 
-  // Copy and convert to Google Doc
-  const docId = Drive.Files.copy(
-    {
+  // Copy and convert to Google Doc (using REST API directly, no advanced service needed)
+  const token = ScriptApp.getOAuthToken();
+  const copyUrl = 'https://www.googleapis.com/drive/v2/files/' + templateFile.getId() + '/copy';
+  const copyResp = UrlFetchApp.fetch(copyUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    payload: JSON.stringify({
       title: docName,
       parents: [{id: targetFolder.getId()}],
       mimeType: MimeType.GOOGLE_DOCS
-    },
-    templateFile.getId()
-  ).id;
+    }),
+    muteHttpExceptions: true
+  });
+  const docId = JSON.parse(copyResp).id;
 
   // Fill content
   const doc = DocumentApp.openById(docId);
@@ -407,17 +414,20 @@ function fillDocumentTables(body, tmpl, formData) {
 // SHEET OPERATIONS
 // ============================================================
 const SHEET_HEADERS = [
-  'كود', 'تاريخ التقديم', 'البند', 'القالب', 'عنوان الطلب',
-  'قيمته', 'رابط المستند', 'حالة', 'ملاحظات', 'تاريخ التسوية',
-  'مقدم الطلب', 'تاريخ الإنشاء'
+  'كود', 'تاريخ التقديم', 'البنود', 'قيمته', 'صوره الطلب',
+  'امضاء', 'تاريخ استلامه', 'ملاحظات', 'التسوية', 'تاريخ التسويات',
+  'المرايه', 'الفواتير'
 ];
 
-function getOrCreateBandSheet(band) {
+const TEMPLATE_SHEET_MAP = {
+  purchase: 'طلبات شراء',
+  disbursement: 'إيصالات استلام',
+  cases: 'كشوف توزيع'
+};
+
+function getOrCreateProjectSheet(projectName) {
   const ss = SpreadsheetApp.openById(CONFIG.sheetId);
-  
-  // Standardize band name
-  const sheetName = band.trim() || 'عام';
-  
+  const sheetName = projectName.trim() || 'عام';
   let sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(sheetName);
@@ -428,7 +438,20 @@ function getOrCreateBandSheet(band) {
   return sheet;
 }
 
-function saveToSheet(formData, docUrl, band) {
+function getOrCreateTemplateSheet(templateKey) {
+  const ss = SpreadsheetApp.openById(CONFIG.sheetId);
+  const sheetName = TEMPLATE_SHEET_MAP[templateKey] || 'أخرى';
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    sheet.appendRow(SHEET_HEADERS);
+    sheet.getRange(1, 1, 1, SHEET_HEADERS.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function saveToSheet(formData, docUrl, project) {
   const dateStr = formData.requestDate
     ? Utilities.formatDate(new Date(formData.requestDate), 'GMT+2', 'dd/MM/yyyy')
     : Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy');
@@ -443,28 +466,31 @@ function saveToSheet(formData, docUrl, band) {
     if (sum > 0) totalValue = String(sum);
   }
 
-  const tmplName = CONFIG.templates[formData.templateKey]?.name || '';
-  const requester = formData.requester || formData.title || '';
-
   const row = [
     dateStr,
-    band,
-    tmplName,
-    formData.title || formData.subject || '',
+    project,
     totalValue,
     docUrl,
-    'جديد',
+    '',
+    '',
     formData.notes || '',
     '',
-    requester,
-    Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy HH:mm')
+    '',
+    '',
+    ''
   ];
 
-  // Save to band-specific tab
-  const bandSheet = getOrCreateBandSheet(band);
-  const bandCode = bandSheet.getLastRow();
-  const bandRow = [bandCode].concat(row);
-  bandSheet.appendRow(bandRow);
+  // Save to template-specific tab
+  const templateSheet = getOrCreateTemplateSheet(formData.templateKey);
+  const tmplCode = templateSheet.getLastRow();
+  const tmplRow = [tmplCode].concat(row);
+  templateSheet.appendRow(tmplRow);
+
+  // Save to project-specific tab
+  const projectSheet = getOrCreateProjectSheet(project);
+  const projectCode = projectSheet.getLastRow();
+  const projectRow = [projectCode].concat(row);
+  projectSheet.appendRow(projectRow);
 
   // Save to master "all" sheet
   const ss = SpreadsheetApp.openById(CONFIG.sheetId);
@@ -482,9 +508,15 @@ function saveToSheet(formData, docUrl, band) {
 
 // Run this once from the Apps Script editor to set up the "all" sheet
 function setupSheet() {
+  // Force UrlFetchApp scope for Web App
+  UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user', {
+    headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken()},
+    muteHttpExceptions: true
+  });
+
   const ss = SpreadsheetApp.openById(CONFIG.sheetId);
   
-  // Create "all" sheet with headers
+  // Create master "all" sheet
   let allSheet = ss.getSheetByName('all');
   if (!allSheet) {
     allSheet = ss.insertSheet('all');
@@ -494,10 +526,26 @@ function setupSheet() {
   allSheet.getRange(1, 1, 1, SHEET_HEADERS.length).setFontWeight('bold');
   allSheet.setFrozenRows(1);
   
-  // Create default band sheets
-  const defaultBands = ['مشتريات', 'استلامات', 'توزيع', 'مخالفات', 'كفالات', 'نقل', 'إعانات', 'أخرى'];
-  for (const band of defaultBands) {
-    getOrCreateBandSheet(band);
+  // Create template tabs
+  for (const key in TEMPLATE_SHEET_MAP) {
+    const name = TEMPLATE_SHEET_MAP[key];
+    let sheet = ss.getSheetByName(name);
+    if (!sheet) sheet = ss.insertSheet(name);
+    sheet.clear();
+    sheet.appendRow(SHEET_HEADERS);
+    sheet.getRange(1, 1, 1, SHEET_HEADERS.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  
+  // Create project tabs
+  const projects = ['الاحتياجات الاساسية', 'الملف الطبي', 'ادارة الحالة', 'العمليات'];
+  for (const proj of projects) {
+    let sheet = ss.getSheetByName(proj);
+    if (!sheet) sheet = ss.insertSheet(proj);
+    sheet.clear();
+    sheet.appendRow(SHEET_HEADERS);
+    sheet.getRange(1, 1, 1, SHEET_HEADERS.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
   }
   
   return 'تم تجهيز الشيت بنجاح!';
