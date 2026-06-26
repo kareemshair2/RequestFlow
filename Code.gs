@@ -36,7 +36,7 @@ const CONFIG = {
       name: 'إيصال استلام منحة عينية',
       sheetProject: 'استلامات',
       fields: [
-        {id: 'acknowledgment', label: 'نص الإقرار', type: 'textarea'}
+        {id: 'acknowledgment', label: 'وصف المنحة المستلمة', type: 'textarea'}
       ],
       tableFields: [
         {id: 'itemDesc', label: 'الصنف المستلم'}
@@ -284,35 +284,23 @@ function fillDocumentFields(body, tmpl, formData) {
     }
   }
 
-  // Handle acknowledgment section (disbursement template with original format)
+  // Handle acknowledgment section - insert text after رقم قومي /, keep name/id fields for handwriting
   if (formData.acknowledgment && tmpl.fileName === 'تمبلت طلبات الصرف.docx') {
-    const startMarker = 'اقر انا /';
-    const endMarker = 'الاسم /';
-    const startFound = body.findText(startMarker);
-    const endFound = body.findText(endMarker);
-    if (startFound && endFound) {
-      const startElem = startFound.getElement();
-      const endElem = endFound.getElement();
-      const startParent = startElem.getParent();
-      const endParent = endElem.getParent();
-      // Delete all content between اقر انا / and الاسم /
-      const bodyChildren = body.getNumChildren();
-      let deleting = false;
-      const toRemove = [];
-      for (let i = 0; i < bodyChildren; i++) {
-        const child = body.getChild(i);
-        if (child === startParent) {
-          deleting = true;
-          continue;
+    const marker = 'رقم قومي /';
+    const found = body.findText(marker);
+    if (found) {
+      const elem = found.getElement();
+      const text = elem.asText();
+      const start = found.getStartOffset();
+      const matchLen = marker.length;
+      const fullText = text.getText();
+      if (start + matchLen < fullText.length) {
+        const after = fullText.substring(start + matchLen).trim();
+        if (after) {
+          text.deleteText(start + matchLen, start + matchLen + after.length - 1);
         }
-        if (child === endParent) {
-          break;
-        }
-        if (deleting) toRemove.push(child);
       }
-      for (const r of toRemove) body.removeChild(r);
-      // Set the acknowledgment text in the start paragraph
-      startParent.asParagraph().setText(formData.acknowledgment);
+      text.insertText(start + matchLen, '\n' + formData.acknowledgment);
     }
   }
 }
