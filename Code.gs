@@ -25,13 +25,8 @@ const CONFIG = {
         {id: 'requestingDept', label: 'الإدارة الطالبة', type: 'text', required: true},
         {id: 'project', label: 'المشروع', type: 'text'},
         {id: 'subject', label: 'موضوع الطلب', type: 'text', required: true},
-        {id: 'jobTitle', label: 'الوظيفة', type: 'text'},
         {id: 'requester', label: 'مقدم الطلب', type: 'text', required: true},
-        {id: 'details', label: 'تفاصيل الطلب', type: 'textarea'},
-        {id: 'requesterSignature', label: 'توقيع الجهة الطالبة', type: 'text'},
-        {id: 'warehouseReview', label: 'مراجعة المخازن', type: 'text'},
-        {id: 'financialApproval', label: 'الإدارة المالية', type: 'text'},
-        {id: 'executiveApproval', label: 'المدير التنفيذي', type: 'text'}
+        {id: 'details', label: 'تفاصيل الطلب', type: 'textarea'}
       ],
       tableColumns: ['بند رقم', 'الصنف والمواصفات', 'الوحدة', 'الكمية', 'سعر الوحدة التقديرية', 'القيمة التقديرية'],
       tableField: 'items'
@@ -43,11 +38,7 @@ const CONFIG = {
       sheetBand: 'استلامات',
       fields: [
         {id: 'requestDate', label: 'تاريخ الاستلام', type: 'date', required: true},
-        {id: 'recipientName', label: 'اسم المستلم', type: 'text', required: true},
-        {id: 'nationalId', label: 'رقم قومي', type: 'text'},
-        {id: 'acknowledgment', label: 'نص الإقرار', type: 'textarea'},
-        {id: 'signatureName', label: 'الاسم (التوقيع)', type: 'text'},
-        {id: 'signature', label: 'التوقيع', type: 'text'}
+        {id: 'acknowledgment', label: 'نص الإقرار', type: 'textarea'}
       ],
       tableFields: [
         {id: 'itemDesc', label: 'الصنف المستلم'}
@@ -80,6 +71,7 @@ function include(filename) {
 // WEB APP
 // ============================================================
 function doGet(e) {
+  // If called from GitHub Pages or directly - redirect or show info
   const output = HtmlService.createHtmlOutput(
     '<html><body style="font-family:sans-serif;text-align:center;padding:40px;direction:rtl">' +
     '<h1>نظام إدارة الطلبات</h1>' +
@@ -451,7 +443,7 @@ function saveToSheet(formData, docUrl, band) {
   }
 
   const tmplName = CONFIG.templates[formData.templateKey]?.name || '';
-  const requester = formData.requester || formData.recipientName || formData.title || '';
+  const requester = formData.requester || formData.title || '';
 
   const row = [
     dateStr,
