@@ -89,13 +89,15 @@
       </div>
     </div>
 
-    <!-- Setup Notice -->
-    <div class="setup-notice" id="setupNotice">
-      <strong>⚙️ ربط الفورم بالباك إند</strong>
-      <p style="font-size:13px;color:#92400e;margin-top:4px">حط رابط Web App بتاع Google Apps Script هنا:</p>
-      <input type="url" id="appScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" onchange="saveUrl()">
+    <!-- Setup Notice (collapsible) -->
+    <div class="setup-notice" id="setupNotice" style="display:none;cursor:pointer" onclick="this.querySelector('input').select()">
+      <strong>🔗 API: </strong><span id="apiUrlDisplay" style="font-size:12px;color:#92400e;direction:ltr;word-break:break-all"></span>
+      <p style="font-size:11px;color:#92400e;margin-top:4px">تغيير الرابط؟ اضغط على <a href="#" onclick="event.stopPropagation();document.getElementById('setupNotice').style.display='none';document.getElementById('setupInputRow').style.display='block'">هنا</a></p>
+    </div>
+    <div class="setup-notice" id="setupInputRow">
+      <strong>⚙️ رابط API</strong>
+      <input type="url" id="appScriptUrl" value="https://script.google.com/macros/s/AKfycbw_UINQdrP9QsGPc6aa58WosGjyqwnmzUK2n_0iiYszbtPofKrvBirp3XXj9YbwHIjbKA/exec" onchange="saveUrl()">
       <button class="btn btn-primary btn-sm" onclick="saveUrl()" style="margin-top:8px">حفظ</button>
-      <p style="font-size:12px;color:#92400e;margin-top:4px">مش عارف الرابط؟ اقرأ <a href="#help" onclick="showHelp()">تعليمات النشر</a></p>
     </div>
 
     <div class="progress-bar">
@@ -275,27 +277,33 @@
     let currentTemplate = null;
 
     function getApiUrl() {
-      return localStorage.getItem('appsScriptUrl') || '';
+      return localStorage.getItem('appsScriptUrl') || DEFAULT_API_URL;
     }
 
     function saveUrl() {
       const url = document.getElementById('appScriptUrl').value.trim();
       if (url) {
         localStorage.setItem('appsScriptUrl', url);
-        document.getElementById('setupNotice').style.display = 'none';
+        document.getElementById('setupInputRow').style.display = 'none';
+        showApiNotice();
       }
     }
 
-    function showHelp() {
-      alert('1. افتح Google Sheet\n2. Extensions > Apps Script\n3. انشر: Deploy > New Deployment > Web App\n4. اختر Execute as: Me, Access: Anyone\n5. انسخ الرابط وحطه هنا');
+    function showApiNotice() {
+      const el = document.getElementById('setupNotice');
+      document.getElementById('apiUrlDisplay').textContent = getApiUrl();
+      el.style.display = 'block';
     }
 
     (function() {
       const saved = localStorage.getItem('appsScriptUrl');
       if (saved) {
         document.getElementById('appScriptUrl').value = saved;
-        document.getElementById('setupNotice').style.display = 'none';
+        document.getElementById('setupInputRow').style.display = 'none';
+      } else {
+        document.getElementById('setupInputRow').style.display = 'none'; // default is pre-filled
       }
+      showApiNotice();
       document.getElementById('requestDate').value = new Date().toISOString().split('T')[0];
     })();
 
