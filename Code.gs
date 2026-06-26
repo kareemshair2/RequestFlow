@@ -36,7 +36,6 @@ const CONFIG = {
       name: 'إيصال استلام منحة عينية',
       sheetProject: 'استلامات',
       fields: [
-        {id: 'requestDate', label: 'تاريخ الاستلام', type: 'date', required: true},
         {id: 'acknowledgment', label: 'نص الإقرار', type: 'textarea'}
       ],
       tableFields: [
@@ -52,7 +51,7 @@ const CONFIG = {
         {id: 'requestDate', label: 'تاريخ التوزيع', type: 'date', required: true},
         {id: 'title', label: 'عنوان الكشف', type: 'text', required: true}
       ],
-      tableColumns: ['الاسم', 'العدد', 'التوقيع'],
+      tableColumns: ['الاسم', 'العدد'],
       tableField: 'beneficiaries'
     }
   }
@@ -351,8 +350,8 @@ function fillDocumentTables(body, tmpl, formData) {
   const fillCount = Math.min(items.length, availableRows);
 
   // Map column headers to field keys
-  const colMap = {
-    'بند رقم': null,  // auto-number
+  let colMap = {
+    'بند رقم': null,
     'م': null,
     'الصنف والمواصفات': 'itemName',
     'الصنف': 'itemName',
@@ -363,8 +362,16 @@ function fillDocumentTables(body, tmpl, formData) {
     'سعر الوحدة التقديرية': 'unitPrice',
     'القيمة التقديرية': 'totalPrice',
     'الاسم': 'name',
+    'امضاء': 'signature',
     'التوقيع': 'signature'
   };
+
+  // Support tableFields format (e.g. disbursement template)
+  if (tmpl.tableFields) {
+    for (const f of tmpl.tableFields) {
+      colMap[f.label] = f.id;
+    }
+  }
 
   // Read header to map columns
   const headerRow = table.getRow(dataStartRow > 0 ? dataStartRow - 1 : 0);

@@ -331,7 +331,6 @@ const TEMPLATES = {
   },
   disbursement: {
     name:'إيصال استلام منحة عينية', fields:[
-      {id:'requestDate',label:'تاريخ الاستلام',type:'date',required:true},
       {id:'acknowledgment',label:'نص الإقرار',type:'textarea'}
     ], tableFields:[{id:'itemDesc',label:'الصنف المستلم'}], tableField:'receivedItems'
   },
@@ -339,7 +338,7 @@ const TEMPLATES = {
     name:'كشف توزيع', fields:[
       {id:'requestDate',label:'تاريخ التوزيع',type:'date',required:true},
       {id:'title',label:'عنوان الكشف',type:'text',required:true}
-    ], tableColumns:['الاسم','العدد','التوقيع'], tableField:'beneficiaries'
+    ], tableColumns:['الاسم','العدد'], tableField:'beneficiaries'
   }
 };
 const API_URL = 'https://script.google.com/macros/s/AKfycbw_UINQdrP9QsGPc6aa58WosGjyqwnmzUK2n_0iiYszbtPofKrvBirp3XXj9YbwHIjbKA/exec';
