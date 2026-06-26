@@ -79,12 +79,16 @@ function include(filename) {
 // ============================================================
 // WEB APP
 // ============================================================
-function doGet() {
-  const html = HtmlService.createTemplateFromFile('Index').evaluate()
-    .setTitle('نظام إدارة الطلبات')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  return html;
+function doGet(e) {
+  const output = HtmlService.createHtmlOutput(
+    '<html><body style="font-family:sans-serif;text-align:center;padding:40px;direction:rtl">' +
+    '<h1>نظام إدارة الطلبات</h1>' +
+    '<p>API Backend شغال ✅</p>' +
+    '<p>استخدم <a href="https://kareemshair2.github.io/RequestFlow" target="_blank">GitHub Pages</a> للفورم</p>' +
+    '<p>أو شغّل <code>setupSheet()</code> من المحرر</p>' +
+    '</body></html>'
+  ).setTitle('نظام إدارة الطلبات - API Backend');
+  return output;
 }
 
 // POST handler for standalone HTML form (GitHub Pages)
