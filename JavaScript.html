@@ -1,0 +1,374 @@
+<!-- JavaScript for form logic -->
+<script>
+  let config = {};
+  let currentTemplate = null;
+
+  // Load config on page load
+  google.script.run
+    .withSuccessHandler(function(cfg) {
+      config = cfg;
+    })
+    .withFailureHandler(function(err) {
+      console.error('Failed to load config:', err);
+    })
+    .getConfig();
+
+  // Template selection
+  function selectTemplate(key) {
+    // Update UI
+    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector(`.template-card[data-template="${key}"]`).classList.add('selected');
+    
+    currentTemplate = key;
+    const tmpl = config.templates[key];
+    document.getElementById('selectedTemplateName').textContent = tmpl.name;
+    document.getElementById('templateKey').value = key;
+    
+    // Set default band
+    if (key === 'purchase') document.getElementById('band').value = 'مشتريات';
+    else if (key === 'disbursement') document.getElementById('band').value = 'استلامات';
+    else if (key === 'cases') document.getElementById('band').value = 'توزيع';
+    
+    // Build dynamic fields
+    buildFields(tmpl);
+    
+    // Build table
+    buildTable(tmpl);
+    
+    // Go to step 2
+    goToStep(2);
+  }
+
+  function buildFields(tmpl) {
+    const container = document.getElementById('dynamicFields');
+    container.innerHTML = '';
+    
+    let html = '<div class="form-row">';
+    tmpl.fields.forEach(function(field, idx) {
+      const required = field.required ? 'required' : '';
+      const requiredStar = field.required ? '<span class="required">*</span>' : '';
+      
+      let inputHtml = '';
+      if (field.type === 'date') {
+        inputHtml = `<input type="date" id="${field.id}" name="${field.id}" ${required}>`;
+      } else if (field.type === 'textarea') {
+        inputHtml = `<textarea id="${field.id}" name="${field.id}" rows="3" ${required}></textarea>`;
+      } else if (field.type === 'select') {
+        inputHtml = `<select id="${field.id}" name="${field.id}" ${required}>`;
+        if (field.options) {
+          field.options.forEach(function(opt) {
+            inputHtml += `<option value="${opt}">${opt}</option>`;
+          });
+        }
+        inputHtml += '</select>';
+      } else {
+        inputHtml = `<input type="text" id="${field.id}" name="${field.id}" ${required} placeholder="${field.label}">`;
+      }
+      
+      html += `<div class="form-group">
+        <label for="${field.id}">${field.label} ${requiredStar}</label>
+        ${inputHtml}
+      </div>`;
+      
+      // Close and open new row every 3 fields
+      if ((idx + 1) % 3 === 0 && idx < tmpl.fields.length - 1) {
+        html += '</div><div class="form-row">';
+      }
+    });
+    html += '</div>';
+    
+    container.innerHTML = html;
+    
+    // Set today's date for date fields
+    const today = new Date().toISOString().split('T')[0];
+    container.querySelectorAll('input[type="date"]').forEach(function(el) {
+      if (!el.value) el.value = today;
+    });
+  }
+
+  function buildTable(tmpl) {
+    const tableSection = document.getElementById('tableSection');
+    const headerRow = document.getElementById('tableHeaderRow');
+    const tableBody = document.getElementById('tableBody');
+    
+    // Check if template has table data
+    if (!tmpl.tableField && !tmpl.tableFields) {
+      tableSection.style.display = 'none';
+      return;
+    }
+    
+    tableSection.style.display = 'block';
+    document.getElementById('tableSectionTitle').textContent = tmpl.tableColumns ? 'جدول البيانات' : 'المواد المستلمة';
+    
+    // Build header
+    let columns = [];
+    if (tmpl.tableColumns) {
+      columns = tmpl.tableColumns;
+    } else if (tmpl.tableFields) {
+      columns = tmpl.tableFields.map(function(f) { return f.label; });
+    }
+    
+    headerRow.innerHTML = columns.map(function(col) {
+      return `<th>${col}</th>`;
+    }).join('') + '<th style="width:40px"></th>';
+    
+    // Start with one empty row
+    tableBody.innerHTML = '';
+    addTableRow();
+  }
+
+  function addTableRow() {
+    const tmpl = config.templates[currentTemplate];
+    if (!tmpl) return;
+    
+    const tableBody = document.getElementById('tableBody');
+    const rowIndex = tableBody.children.length + 1;
+    const tr = document.createElement('tr');
+    
+    if (tmpl.tableColumns) {
+      const fieldKeys = ['itemName', 'unit', 'quantity', 'unitPrice', 'totalPrice'];
+      const colMap = {
+        'بند رقم': 'index',
+        'م': 'index',
+        'الصنف والمواصفات': 'itemName',
+        'الصنف': 'itemName',
+        'الوحدة': 'unit',
+        'الكمية': 'quantity',
+        'العدد': 'count',
+        'سعر الوحدة التقديرية': 'unitPrice',
+        'القيمة التقديرية': 'totalPrice',
+        'الاسم': 'name',
+        'التوقيع': 'signature'
+      };
+      
+      tmpl.tableColumns.forEach(function(col) {
+        const td = document.createElement('td');
+        const fieldKey = colMap[col] || 'itemName';
+        if (col === 'بند رقم' || col === 'م') {
+          td.textContent = rowIndex;
+          td.style.fontWeight = '600';
+          td.style.textAlign = 'center';
+        } else {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.name = 'table_' + fieldKey;
+          input.placeholder = col;
+          input.dataset.column = col;
+          td.appendChild(input);
+        }
+        tr.appendChild(td);
+      });
+    } else if (tmpl.tableFields) {
+      tmpl.tableFields.forEach(function(field) {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'table_' + field.id;
+        input.placeholder = field.label;
+        td.appendChild(input);
+        tr.appendChild(td);
+      });
+    }
+    
+    // Remove button
+    const tdRemove = document.createElement('td');
+    tdRemove.style.textAlign = 'center';
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn-remove-row';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.onclick = function() {
+      if (tableBody.children.length > 1) {
+        tr.remove();
+        renumberRows();
+      }
+    };
+    tdRemove.appendChild(removeBtn);
+    tr.appendChild(tdRemove);
+    
+    tableBody.appendChild(tr);
+  }
+
+  function renumberRows() {
+    const tableBody = document.getElementById('tableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    rows.forEach(function(row, idx) {
+      const firstCell = row.cells[0];
+      if (firstCell && !firstCell.querySelector('input')) {
+        firstCell.textContent = idx + 1;
+      }
+    });
+  }
+
+  // Collect table data
+  function collectTableData() {
+    const tmpl = config.templates[currentTemplate];
+    if (!tmpl || !tmpl.tableField) return [];
+    
+    const items = [];
+    const tableBody = document.getElementById('tableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    rows.forEach(function(row) {
+      const inputs = row.querySelectorAll('input');
+      const item = {};
+      inputs.forEach(function(input) {
+        const key = input.name.replace('table_', '');
+        item[key] = input.value;
+      });
+      // For non-input columns (like index)
+      const cells = row.cells;
+      if (tmpl.tableColumns) {
+        tmpl.tableColumns.forEach(function(col, idx) {
+          if (col === 'بند رقم' || col === 'م') {
+            item.index = cells[idx] ? cells[idx].textContent : '';
+          }
+        });
+      }
+      items.push(item);
+    });
+    
+    return items;
+  }
+
+  // Form submission
+  function submitForm() {
+    const tmpl = config.templates[currentTemplate];
+    if (!tmpl) {
+      showError('الرجاء اختيار قالب أولاً');
+      return;
+    }
+    
+    // Validate required fields
+    const form = document.getElementById('mainForm');
+    const requiredFields = form.querySelectorAll('[required]');
+    let valid = true;
+    requiredFields.forEach(function(f) {
+      if (!f.value.trim()) {
+        f.style.borderColor = '#dc2626';
+        valid = false;
+      } else {
+        f.style.borderColor = '#d1d5db';
+      }
+    });
+    
+    if (!valid) {
+      showError('الرجاء ملء جميع الحقول المطلوبة');
+      return;
+    }
+    
+    // Collect form data
+    const formData = {
+      templateKey: currentTemplate,
+      requestDate: document.getElementById('requestDate').value,
+      band: document.getElementById('band').value,
+      title: document.getElementById('title').value || document.getElementById('subject')?.value || '',
+      notes: document.getElementById('notes').value
+    };
+    
+    // Collect template fields
+    tmpl.fields.forEach(function(field) {
+      const el = document.getElementById(field.id);
+      if (el) formData[field.id] = el.value;
+    });
+    
+    // Collect table data
+    if (tmpl.tableField) {
+      formData[tmpl.tableField] = collectTableData();
+    }
+    
+    // Show loading
+    document.getElementById('submitBtnText').style.display = 'none';
+    document.getElementById('submitSpinner').style.display = 'block';
+    
+    // Submit to Apps Script
+    google.script.run
+      .withSuccessHandler(function(result) {
+        document.getElementById('submitBtnText').style.display = 'inline';
+        document.getElementById('submitSpinner').style.display = 'none';
+        
+        if (result.success) {
+          showSuccess(result);
+        } else {
+          showError(result.error || 'حدث خطأ أثناء تقديم الطلب');
+        }
+      })
+      .withFailureHandler(function(err) {
+        document.getElementById('submitBtnText').style.display = 'inline';
+        document.getElementById('submitSpinner').style.display = 'none';
+        showError('خطأ في الاتصال: ' + err.message);
+      })
+      .submitRequest(formData);
+  }
+
+  function showSuccess(result) {
+    goToStep(3);
+    document.getElementById('successMessage').textContent = result.message || 'تم إنشاء المستند بنجاح';
+    
+    const linksContainer = document.getElementById('successLinks');
+    linksContainer.innerHTML = '';
+    
+    if (result.docUrl) {
+      const a = document.createElement('a');
+      a.href = result.docUrl;
+      a.target = '_blank';
+      a.innerHTML = '📄 فتح المستند';
+      linksContainer.appendChild(a);
+    }
+    if (result.folderUrl) {
+      const a = document.createElement('a');
+      a.href = result.folderUrl;
+      a.target = '_blank';
+      a.innerHTML = '📁 فتح المجلد';
+      linksContainer.appendChild(a);
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorDisplay');
+    document.getElementById('errorText').textContent = msg;
+    el.style.display = 'flex';
+    setTimeout(function() { el.style.display = 'none'; }, 5000);
+  }
+
+  // Step navigation
+  function goToStep(step) {
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('step' + i).style.display = i === step ? 'block' : 'none';
+      const progStep = document.querySelector('.progress-step[data-step="' + i + '"]');
+      if (progStep) {
+        progStep.classList.toggle('active', i === step);
+        progStep.classList.toggle('completed', i < step);
+      }
+    }
+    window.scrollTo(0, 0);
+  }
+
+  // Reset form
+  function resetForm() {
+    document.getElementById('mainForm').reset();
+    document.getElementById('tableBody').innerHTML = '';
+    document.getElementById('dynamicFields').innerHTML = '';
+    document.getElementById('tableSection').style.display = 'none';
+    document.querySelectorAll('.template-card').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    currentTemplate = null;
+    goToStep(1);
+  }
+
+  // Enter key to add row
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.closest('#itemsTable')) {
+      e.preventDefault();
+      addTableRow();
+      // Focus last input of new row
+      const tableBody = document.getElementById('tableBody');
+      const lastRow = tableBody.lastElementChild;
+      if (lastRow) {
+        const inputs = lastRow.querySelectorAll('input');
+        if (inputs.length > 0) inputs[inputs.length - 1].focus();
+      }
+    }
+  });
+</script>

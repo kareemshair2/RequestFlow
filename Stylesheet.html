@@ -1,0 +1,391 @@
+<!-- Stylesheet for the form -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #f0f2f5;
+    color: #1f2937;
+    line-height: 1.6;
+    direction: rtl;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  .header-icon {
+    background: #1e3a5f;
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+  }
+  .progress-step.active {
+    opacity: 1;
+  }
+  .progress-step.completed .step-number {
+    background: #059669;
+    color: white;
+  }
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  .progress-step.active .step-number {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  }
+  .step-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  .progress-step.active .step-label {
+    color: #2563eb;
+  }
+  .progress-line {
+    width: 80px;
+    height: 2px;
+    background: #e5e7eb;
+    margin: 0 8px;
+    margin-bottom: 28px;
+  }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    font-size: 15px;
+    color: #374151;
+  }
+  .card-body {
+    padding: 20px;
+  }
+
+  /* Template Grid */
+  .template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .template-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .template-card:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+    transform: translateY(-2px);
+  }
+  .template-card.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+  }
+  .template-card[data-template="disbursement"]:hover,
+  .template-card[data-template="disbursement"].selected {
+    border-color: #059669;
+    background: #ecfdf5;
+  }
+  .template-card[data-template="cases"]:hover,
+  .template-card[data-template="cases"].selected {
+    border-color: #d97706;
+    background: #fffbeb;
+  }
+  .template-icon {
+    margin-bottom: 12px;
+  }
+  .template-name {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .template-desc {
+    font-size: 13px;
+    color: #9ca3af;
+  }
+
+  /* Form */
+  .form-section {
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .form-group {
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+  .form-group .required {
+    color: #dc2626;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table th {
+    background: #f8fafc;
+    padding: 10px 8px;
+    border: 1px solid #e5e7eb;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+  table td {
+    padding: 6px 8px;
+    border: 1px solid #e5e7eb;
+  }
+  table td input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    background: transparent;
+  }
+  table td input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+  }
+  .btn-remove-row {
+    background: #fee2e2;
+    border: none;
+    color: #dc2626;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-remove-row:hover {
+    background: #fecaca;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #374151;
+  }
+  .btn-outline:hover {
+    background: #f8fafc;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 8px;
+  }
+
+  /* Spinner */
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Success */
+  .success-icon {
+    animation: bounceIn 0.5s ease;
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .success-links {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  .success-links a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    background: #eff6ff;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .success-links a:hover {
+    background: #dbeafe;
+  }
+
+  /* Error Toast */
+  .error-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #dc2626;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(220,38,38,0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    z-index: 1000;
+    max-width: 90%;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .container { padding: 12px; }
+    .template-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .progress-line { width: 40px; }
+  }
+</style>

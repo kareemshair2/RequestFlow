@@ -1,0 +1,194 @@
+<!-- ============================================================
+نظام إدارة الطلبات - واجهة المستخدم
+============================================================ -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة الطلبات</title>
+  <?!= include('Stylesheet'); ?>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </div>
+      <div>
+        <h1>نظام إدارة الطلبات</h1>
+        <p class="subtitle">جمعية صناع الحياة المنوفية</p>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-label">اختيار القالب</div>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-label">إدخال البيانات</div>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-label">تأكيد ورفع</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Template Selection -->
+    <div id="step1" class="step-content">
+      <div class="card">
+        <div class="card-header">اختر نوع الطلب</div>
+        <div class="card-body">
+          <div class="template-grid" id="templateGrid">
+            <div class="template-card" data-template="purchase" onclick="selectTemplate('purchase')">
+              <div class="template-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+              </div>
+              <div class="template-name">طلب شراء</div>
+              <div class="template-desc">سلعة / خدمة</div>
+            </div>
+            <div class="template-card" data-template="disbursement" onclick="selectTemplate('disbursement')">
+              <div class="template-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+              </div>
+              <div class="template-name">إيصال استلام</div>
+              <div class="template-desc">منحة عينية</div>
+            </div>
+            <div class="template-card" data-template="cases" onclick="selectTemplate('cases')">
+              <div class="template-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div class="template-name">كشف توزيع</div>
+              <div class="template-desc">حالات ومستفيدين</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Data Entry -->
+    <div id="step2" class="step-content" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-outline" onclick="goToStep(1)" type="button">&larr; تغيير القالب</button>
+            <span id="selectedTemplateName">طلب شراء (سلعة/خدمة)</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <form id="mainForm" onsubmit="return false;">
+            <input type="hidden" id="templateKey" name="templateKey">
+            
+            <!-- Common Fields -->
+            <div class="form-section">
+              <h3 class="section-title">البيانات الأساسية</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="requestDate">تاريخ الطلب <span class="required">*</span></label>
+                  <input type="date" id="requestDate" name="requestDate" required>
+                </div>
+                <div class="form-group">
+                  <label for="band">البند</label>
+                  <input type="text" id="band" name="band" placeholder="مثال: مشتريات، إعانات، ...">
+                </div>
+                <div class="form-group">
+                  <label for="title">عنوان الطلب <span class="required">*</span></label>
+                  <input type="text" id="title" name="title" required placeholder="عنوان مختصر للطلب">
+                </div>
+              </div>
+            </div>
+
+            <!-- Template-specific fields -->
+            <div class="form-section" id="templateFields">
+              <h3 class="section-title">بيانات القالب</h3>
+              <div id="dynamicFields"></div>
+            </div>
+
+            <!-- Repeating Table Section -->
+            <div class="form-section" id="tableSection" style="display:none">
+              <h3 class="section-title" id="tableSectionTitle">الجدول</h3>
+              <div class="table-wrapper">
+                <table id="itemsTable">
+                  <thead>
+                    <tr id="tableHeaderRow"></tr>
+                  </thead>
+                  <tbody id="tableBody"></tbody>
+                </table>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="addTableRow()" type="button">
+                + إضافة بند
+              </button>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-section">
+              <h3 class="section-title">ملاحظات</h3>
+              <div class="form-group">
+                <textarea id="notes" name="notes" rows="3" placeholder="أي ملاحظات إضافية..."></textarea>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="submitForm()" type="button">
+                <span id="submitBtnText">تقديم الطلب</span>
+                <div id="submitSpinner" class="spinner" style="display:none"></div>
+              </button>
+              <button class="btn btn-outline" onclick="resetForm()" type="button">إعادة تعيين</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Success -->
+    <div id="step3" class="step-content" style="display:none">
+      <div class="card">
+        <div class="card-body" style="text-align:center;padding:40px">
+          <div class="success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2 style="margin:16px 0 8px;color:#059669">تم تقديم الطلب بنجاح!</h2>
+          <p id="successMessage" style="color:#6b7280;margin-bottom:24px"></p>
+          <div id="successLinks" class="success-links"></div>
+          <button class="btn btn-primary" onclick="resetForm()" type="button">تقديم طلب جديد</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error display -->
+    <div id="errorDisplay" class="error-toast" style="display:none">
+      <span id="errorText"></span>
+      <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:white;cursor:pointer;font-size:20px">&times;</button>
+    </div>
+  </div>
+
+  <?!= include('JavaScript'); ?>
+</body>
+</html>
