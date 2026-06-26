@@ -25,6 +25,7 @@ const CONFIG = {
         {id: 'requestingDept', label: 'الإدارة الطالبة', type: 'text', required: true},
         {id: 'project', label: 'المشروع', type: 'text'},
         {id: 'subject', label: 'موضوع الطلب', type: 'text', required: true},
+        {id: 'jobTitle', label: 'الوظيفة', type: 'text'},
         {id: 'requester', label: 'مقدم الطلب', type: 'text', required: true},
         {id: 'details', label: 'تفاصيل الطلب', type: 'textarea'}
       ],
